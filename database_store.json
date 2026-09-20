@@ -3,7 +3,7 @@
     {
       "id": "admin-1",
       "email": "antonio.riyanto07@gmail.com",
-      "passwordHash": "$2b$12$.FzsJW6EcglE4dRJtOqS4ews3AVUshRnG5RaCFB2zYELaNx5Goo62",
+      "passwordHash": "$2b$12$VLOCeY8uWHxomOv2fBpJCeYfeum6Ef4h7TFBox5/qwg.8dsfgK0c2",
       "displayName": "Antonio Riyanto",
       "role": "SUPER_ADMIN",
       "isActive": true,
@@ -534,6 +534,102 @@
   "contentRevisions": [],
   "auditLogs": [
     {
+      "id": "audit-a455fda7-bbe2-4a34-85ff-7c0a741c5086",
+      "actorId": "admin-1",
+      "action": "DELETE_PROJECT",
+      "entityType": "System",
+      "metadataJson": "{\"id\":\"proj-1789898060359\"}",
+      "createdAt": "2026-09-20T09:54:20.383Z"
+    },
+    {
+      "id": "audit-30220a6b-e769-44dc-b461-9709315d5e69",
+      "actorId": "admin-1",
+      "action": "CREATE_PROJECT",
+      "entityType": "System",
+      "metadataJson": "{\"title\":\"Minimalist Brand Architecture\",\"id\":\"proj-1789898060359\"}",
+      "createdAt": "2026-09-20T09:54:20.360Z"
+    },
+    {
+      "id": "audit-76f84c8b-61df-4e04-a074-58816d3e0606",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"127.0.0.1\"}",
+      "createdAt": "2026-09-20T09:54:20.343Z"
+    },
+    {
+      "id": "audit-ca91ad60-41d5-46df-a718-a1ce37945259",
+      "actorId": "admin-1",
+      "action": "DELETE_SKILL",
+      "entityType": "System",
+      "metadataJson": "{\"id\":\"sk-1789898057193\"}",
+      "createdAt": "2026-09-20T09:54:17.246Z"
+    },
+    {
+      "id": "audit-8e1d1242-2e00-4bea-804b-6165860af304",
+      "actorId": "admin-1",
+      "action": "UPDATE_SKILL",
+      "entityType": "System",
+      "metadataJson": "{\"id\":\"sk-1789898057193\"}",
+      "createdAt": "2026-09-20T09:54:17.230Z"
+    },
+    {
+      "id": "audit-9ecdf746-3a12-413a-9e85-5112f9b1891f",
+      "actorId": "admin-1",
+      "action": "CREATE_SKILL",
+      "entityType": "System",
+      "metadataJson": "{\"name\":\"Typography Mastery\"}",
+      "createdAt": "2026-09-20T09:54:17.193Z"
+    },
+    {
+      "id": "audit-e2ae7fe5-5396-41d9-a06c-51d5f924bed5",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"127.0.0.1\"}",
+      "createdAt": "2026-09-20T09:54:17.175Z"
+    },
+    {
+      "id": "audit-f95c2fa6-02b6-455c-aeac-1809d91e3000",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"127.0.0.1\"}",
+      "createdAt": "2026-09-20T09:53:59.702Z"
+    },
+    {
+      "id": "audit-b4167521-1489-4282-b19e-33fb6d8346b7",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"169.254.169.126\"}",
+      "createdAt": "2026-09-20T09:53:04.085Z"
+    },
+    {
+      "id": "audit-6c197c77-1a44-4925-8a73-0325a86abb57",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"127.0.0.1\"}",
+      "createdAt": "2026-09-20T09:51:03.931Z"
+    },
+    {
+      "id": "audit-a4ae17d5-0ebe-4b29-9ce7-6d0d3fc8dcb5",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"127.0.0.1\"}",
+      "createdAt": "2026-09-20T09:50:47.071Z"
+    },
+    {
+      "id": "audit-9a76cfdb-9256-4928-8354-61f89f7450dc",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"169.254.169.126\"}",
+      "createdAt": "2026-09-20T09:41:06.083Z"
+    },
+    {
       "id": "audit-30a1184b-6d44-42e5-a59b-fa8555692034",
       "actorId": "admin-1",
       "action": "LOGIN_SUCCESS",
@@ -609,6 +705,48 @@
       "email": "antonio.riyanto07@gmail.com",
       "role": "SUPER_ADMIN",
       "expiresAt": 1789981923323
+    },
+    "3b8295e6f1291b06a23ddb9327fd31b9b0598bd669683a3ae25dace52f0b695c": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789983666082
+    },
+    "2b41d8919a92a383ea78631b06e814e32d8a6da75d00829b478ccfdc832d097d": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789984247069
+    },
+    "838bd15bf061a43e59066543fe178b8961b1cf4453285e6b700ae771c3545d82": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789984263929
+    },
+    "2c50e12504a770d1791bb3db68602d686794cc0f17bc8278639367ef6c3dfa24": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789984384084
+    },
+    "bfb3072b9dbad4c333d739f3f784f5921fbeb4247daf5e8dec4e4e98600cd3de": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789984439701
+    },
+    "03074b6c84bd9a142db0b94f3f9299a74afa09b7870a6e540aecbfac0383d667": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789984457174
+    },
+    "d0fd001019c7f281a5a0fbc4dc5c9d0093d73446c34341d39459a59c5c524876": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789984460342
     }
   },
   "previewTokens": {},

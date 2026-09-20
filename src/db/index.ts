@@ -57,4 +57,19 @@ export async function testConnection(): Promise<boolean> {
   }
 }
 
+export async function checkDatabaseHealth(): Promise<{ connected: boolean; message: string }> {
+  if (!isDatabaseConfigured) {
+    return { connected: false, message: 'DATABASE_URL not configured (using local store)' };
+  }
+  try {
+    const client = await pool.connect();
+    await client.query('SELECT 1');
+    client.release();
+    return { connected: true, message: 'Connected to Supabase PostgreSQL' };
+  } catch (err: any) {
+    return { connected: false, message: err.message || 'Database connection error' };
+  }
+}
+
+
 

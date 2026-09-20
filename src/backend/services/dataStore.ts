@@ -238,6 +238,24 @@ class DataStoreService {
     return true;
   }
 
+  public reorderProjects(order: (string | { id: string; sortOrder: number })[]) {
+    const data = this.loadData();
+    if (!data.projects) return [];
+
+    order.forEach((item, index) => {
+      const id = typeof item === 'string' ? item : item.id;
+      const sortOrder = typeof item === 'object' && item.sortOrder !== undefined ? item.sortOrder : index + 1;
+      const proj = data.projects.find((p: any) => p.id === id);
+      if (proj) {
+        proj.sortOrder = sortOrder;
+      }
+    });
+
+    data.projects.sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    this.persist();
+    return data.projects;
+  }
+
   // --- Experiences ---
   public getExperiences(onlyPublished = true) {
     const data = this.loadData();
@@ -536,9 +554,21 @@ class DataStoreService {
   }
 
   // --- Audit Logs ---
-  public getAuditLogs() {
+  public getAuditLogs(options?: { action?: string; limit?: number; page?: number }) {
     const data = this.loadData();
-    return data.auditLogs || [];
+    let logs = data.auditLogs || [];
+    if (options?.action) {
+      const act = options.action.toLowerCase();
+      logs = logs.filter((l: any) => l.action?.toLowerCase().includes(act));
+    }
+    if (options?.page && options?.limit) {
+      const start = (options.page - 1) * options.limit;
+      return logs.slice(start, start + options.limit);
+    }
+    if (options?.limit) {
+      return logs.slice(0, options.limit);
+    }
+    return logs;
   }
 
   public addAuditLog(actorId: string, action: string, details?: any) {
@@ -562,6 +592,11 @@ class DataStoreService {
   }
 
   // --- Contact Inquiries ---
+  public getContactInquiries() {
+    const data = this.loadData();
+    return data.contactInquiries || [];
+  }
+
   public saveContactInquiry(inquiry: any) {
     const data = this.loadData();
     const item = {
