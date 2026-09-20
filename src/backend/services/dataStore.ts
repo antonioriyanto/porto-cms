@@ -103,12 +103,19 @@ class DataStoreService {
   }
 
   private persist() {
+    const isVercelOrProd = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+    if (isVercelOrProd) {
+      // In Vercel Serverless / Production, filesystem is strictly read-only (/var/task).
+      // Never attempt to write to disk. All state is in-memory or persisted in PostgreSQL.
+      return;
+    }
+
     if (!this.memoryData || this.isSaving) return;
     this.isSaving = true;
     try {
       fs.writeFileSync(this.filePath, JSON.stringify(this.memoryData, null, 2), 'utf-8');
-    } catch (e) {
-      console.error('Failed to write database_store.json:', e);
+    } catch (e: any) {
+      console.warn('[DataStore Persist Disabled/Failed]:', e.message);
     } finally {
       this.isSaving = false;
     }

@@ -1,39 +1,32 @@
 import { Router } from 'express';
-import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { dataStore } from '../services/dataStore';
 import { requireAdmin, AuthenticatedRequest } from '../middlewares/authMiddleware';
-import { supabase } from '../services/storage';
+import { isSupabaseConfigured, uploadMulter, uploadToSupabaseStorage } from '../services/storage';
 
 const router = Router();
 router.use(requireAdmin);
 
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 15 * 1024 * 1024 } // 15MB
-});
-
-// Media Upload
-router.post('/media/upload', upload.any(), async (req: AuthenticatedRequest, res) => {
+// Media Upload (4MB limit, JPG/PNG/WEBP/PDF)
+router.post('/media/upload', (req: AuthenticatedRequest, res, next) => {
+  uploadMulter.any()(req, res, (err: any) => {
+    if (err) {
+      return res.status(400).json({ error: err.message || 'Upload failed. File size limit is 4MB.' });
+    }
+    next();
+  });
+}, async (req: AuthenticatedRequest, res) => {
   try {
     const file = req.file || (req.files as Express.Multer.File[])?.[0];
     if (!file) return res.status(400).json({ error: 'No file uploaded' });
 
     let publicUrl = '';
-    if (process.env.SUPABASE_URL && !process.env.SUPABASE_URL.includes('placeholder') && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      try {
-        const fileExt = file.originalname.split('.').pop();
-        const fileName = `${uuidv4()}.${fileExt}`;
-        const { error } = await supabase.storage.from('portfolio-media').upload(fileName, file.buffer, {
-          contentType: file.mimetype,
-          upsert: false
-        });
-        if (!error) {
-          const { data } = supabase.storage.from('portfolio-media').getPublicUrl(fileName);
-          publicUrl = data.publicUrl;
-        }
-      } catch (err: any) {
-        console.warn('Supabase upload warning:', err.message);
+    if (isSupabaseConfigured()) {
+      const fileExt = file.originalname.split('.').pop();
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const uploadRes = await uploadToSupabaseStorage('portfolio-media', fileName, file.buffer, file.mimetype);
+      if (uploadRes.publicUrl) {
+        publicUrl = uploadRes.publicUrl;
       }
     }
 
@@ -57,8 +50,15 @@ router.post('/media/upload', upload.any(), async (req: AuthenticatedRequest, res
   }
 });
 
-// Resume Upload
-router.post('/resume/upload', upload.any(), async (req: AuthenticatedRequest, res) => {
+// Resume Upload (4MB limit, PDF only)
+router.post('/resume/upload', (req: AuthenticatedRequest, res, next) => {
+  uploadMulter.any()(req, res, (err: any) => {
+    if (err) {
+      return res.status(400).json({ error: err.message || 'Upload failed. File size limit is 4MB.' });
+    }
+    next();
+  });
+}, async (req: AuthenticatedRequest, res) => {
   try {
     const file = req.file || (req.files as Express.Multer.File[])?.[0];
     if (!file) return res.status(400).json({ error: 'No file uploaded' });
@@ -69,18 +69,10 @@ router.post('/resume/upload', upload.any(), async (req: AuthenticatedRequest, re
     const fileName = `Antonio-Riyanto-Resume-${Date.now()}.pdf`;
     let publicUrl = '';
 
-    if (process.env.SUPABASE_URL && !process.env.SUPABASE_URL.includes('placeholder') && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      try {
-        const { error } = await supabase.storage.from('portfolio-private').upload(fileName, file.buffer, {
-          contentType: 'application/pdf',
-          upsert: false
-        });
-        if (!error) {
-          const { data } = supabase.storage.from('portfolio-private').getPublicUrl(fileName);
-          publicUrl = data.publicUrl;
-        }
-      } catch (err: any) {
-        console.warn('Supabase resume upload warning:', err.message);
+    if (isSupabaseConfigured()) {
+      const uploadRes = await uploadToSupabaseStorage('portfolio-private', fileName, file.buffer, 'application/pdf');
+      if (uploadRes.publicUrl) {
+        publicUrl = uploadRes.publicUrl;
       }
     }
 
