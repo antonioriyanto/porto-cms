@@ -1,271 +1,401 @@
 import { Router } from 'express';
-import { db } from '../../db';
-import { projects, profiles, siteSettings, experiences, education, skills, testimonials, mediaAssets, resumeVersions } from '../../db/schema';
-import { eq, asc } from 'drizzle-orm';
-import { requireAdmin } from '../middlewares/authMiddleware';
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import { dataStore } from '../services/dataStore';
+import { requireAdmin, AuthenticatedRequest } from '../middlewares/authMiddleware';
+import { supabase } from '../services/storage';
 
 const router = Router();
-router.use(requireAdmin); // Protect all routes
-
-import multer from 'multer';
-import { supabase } from '../services/storage';
-import { v4 as uuidv4 } from 'uuid';
+router.use(requireAdmin);
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 15 * 1024 * 1024 } // 15MB
 });
 
-router.post('/media/upload', upload.single('file'), async (req, res) => {
+// Media Upload
+router.post('/media/upload', upload.any(), async (req: AuthenticatedRequest, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const file = req.file || (req.files as Express.Multer.File[])?.[0];
+    if (!file) return res.status(400).json({ error: 'No file uploaded' });
 
-    const fileExt = req.file.originalname.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
-    const bucketName = 'portfolio-media';
+    let publicUrl = '';
+    if (process.env.SUPABASE_URL && !process.env.SUPABASE_URL.includes('placeholder') && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        const fileExt = file.originalname.split('.').pop();
+        const fileName = `${uuidv4()}.${fileExt}`;
+        const { error } = await supabase.storage.from('portfolio-media').upload(fileName, file.buffer, {
+          contentType: file.mimetype,
+          upsert: false
+        });
+        if (!error) {
+          const { data } = supabase.storage.from('portfolio-media').getPublicUrl(fileName);
+          publicUrl = data.publicUrl;
+        }
+      } catch (err: any) {
+        console.warn('Supabase upload warning:', err.message);
+      }
+    }
 
-    // In a real app, ensure bucket exists or create it
-    const { data, error } = await supabase.storage
-      .from(bucketName)
-      .upload(fileName, req.file.buffer, {
-        contentType: req.file.mimetype,
-        upsert: false
-      });
+    if (!publicUrl) {
+      publicUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+    }
 
-    if (error) throw error;
+    const asset = dataStore.addMediaAsset({
+      fileName: file.originalname,
+      originalName: file.originalname,
+      mimeType: file.mimetype,
+      sizeBytes: file.size,
+      publicUrl
+    });
 
-    const { data: publicData } = supabase.storage.from(bucketName).getPublicUrl(fileName);
-
-    const asset = await db.insert(mediaAssets).values({
-      fileName,
-      originalName: req.file.originalname,
-      mimeType: req.file.mimetype,
-      sizeBytes: req.file.size,
-      bucketId: bucketName,
-      publicUrl: publicData.publicUrl
-    }).returning();
-
-    res.json(asset[0]);
+    dataStore.addAuditLog(req.user?.id || 'admin', 'MEDIA_UPLOAD', { fileName: file.originalname });
+    res.json(asset);
   } catch (error: any) {
     console.error('Upload error:', error);
     res.status(500).json({ error: 'Failed to upload media' });
   }
 });
 
-router.post('/resume/upload', upload.single('file'), async (req, res) => {
+// Resume Upload
+router.post('/resume/upload', upload.any(), async (req: AuthenticatedRequest, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    if (req.file.mimetype !== 'application/pdf') return res.status(400).json({ error: 'Only PDF allowed' });
+    const file = req.file || (req.files as Express.Multer.File[])?.[0];
+    if (!file) return res.status(400).json({ error: 'No file uploaded' });
+    if (file.mimetype !== 'application/pdf' && !file.originalname.toLowerCase().endsWith('.pdf')) {
+      return res.status(400).json({ error: 'Only PDF files allowed' });
+    }
 
     const fileName = `Antonio-Riyanto-Resume-${Date.now()}.pdf`;
-    const bucketName = 'portfolio-private';
+    let publicUrl = '';
 
-    const { data, error } = await supabase.storage
-      .from(bucketName)
-      .upload(fileName, req.file.buffer, {
-        contentType: 'application/pdf',
-        upsert: false
-      });
+    if (process.env.SUPABASE_URL && !process.env.SUPABASE_URL.includes('placeholder') && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        const { error } = await supabase.storage.from('portfolio-private').upload(fileName, file.buffer, {
+          contentType: 'application/pdf',
+          upsert: false
+        });
+        if (!error) {
+          const { data } = supabase.storage.from('portfolio-private').getPublicUrl(fileName);
+          publicUrl = data.publicUrl;
+        }
+      } catch (err: any) {
+        console.warn('Supabase resume upload warning:', err.message);
+      }
+    }
 
-    if (error) throw error;
+    if (!publicUrl) {
+      publicUrl = `data:application/pdf;base64,${file.buffer.toString('base64')}`;
+    }
 
-    // Deactivate previous
-    await db.update(resumeVersions).set({ isActive: false });
-
-    const { data: publicData } = supabase.storage.from(bucketName).getPublicUrl(fileName);
-
-    const asset = await db.insert(resumeVersions).values({
+    const asset = {
       versionName: `Resume ${new Date().toISOString().split('T')[0]}`,
-      fileUrl: publicData.publicUrl,
+      fileUrl: publicUrl,
       fileName,
       isActive: true
-    }).returning();
+    };
 
-    res.json(asset[0]);
+    dataStore.addAuditLog(req.user?.id || 'admin', 'RESUME_UPLOAD', { fileName });
+    res.json(asset);
   } catch (error: any) {
     console.error('Upload error:', error);
     res.status(500).json({ error: 'Failed to upload resume' });
   }
 });
 
+// Dashboard
 router.get('/dashboard', async (req, res) => {
   try {
-    const allProjects = await db.select().from(projects);
-    const mediaCount = (await db.select().from(mediaAssets)).length;
+    const allProjects = dataStore.getProjects(false);
+    const media = dataStore.getMediaAssets();
     res.json({
       projects: allProjects,
-      stats: { mediaCount, projectCount: allProjects.length }
+      stats: {
+        mediaCount: media.length,
+        projectCount: allProjects.length
+      }
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: 'Failed to load dashboard' });
   }
 });
 
 // Settings
 router.get('/settings', async (req, res) => {
-  const settings = await db.select().from(siteSettings).limit(1);
-  res.json(settings[0] || {});
+  try {
+    const siteData = dataStore.getSiteSettings();
+    res.json(siteData.settings);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch settings' });
+  }
 });
 
-router.post('/settings', async (req, res) => {
-  const existing = await db.select().from(siteSettings).limit(1);
-  if (existing.length > 0) {
-    await db.update(siteSettings).set(req.body).where(eq(siteSettings.id, existing[0].id));
-  } else {
-    await db.insert(siteSettings).values(req.body);
+const saveSettingsHandler = async (req: AuthenticatedRequest, res: any) => {
+  try {
+    const updated = dataStore.updateSiteSettings(req.body);
+    dataStore.addAuditLog(req.user?.id || 'admin', 'UPDATE_SETTINGS', req.body);
+    res.json(updated);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to update settings' });
   }
-  res.json({ success: true });
-});
+};
+router.post('/settings', saveSettingsHandler);
+router.put('/settings', saveSettingsHandler);
 
 // Profile
 router.get('/profile', async (req, res) => {
-  const profile = await db.select().from(profiles).limit(1);
-  res.json(profile[0] || {});
-});
-
-router.post('/profile', async (req, res) => {
-  const existing = await db.select().from(profiles).limit(1);
-  if (existing.length > 0) {
-    await db.update(profiles).set(req.body).where(eq(profiles.id, existing[0].id));
-  } else {
-    await db.insert(profiles).values(req.body);
-  }
-  res.json({ success: true });
-});
-
-// Projects CRUD
-router.get('/projects', async (req, res) => {
-  const allProjects = await db.select().from(projects).orderBy(asc(projects.sortOrder));
-  res.json(allProjects);
-});
-
-router.post('/projects', async (req, res) => {
   try {
-    const newProject = await db.insert(projects).values({ ...req.body, id: undefined }).returning();
-    res.json(newProject[0]);
-  } catch (error) {
+    const profile = dataStore.getProfile();
+    res.json(profile);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
+const saveProfileHandler = async (req: AuthenticatedRequest, res: any) => {
+  try {
+    const updated = dataStore.updateProfile(req.body);
+    dataStore.addAuditLog(req.user?.id || 'admin', 'UPDATE_PROFILE', req.body);
+    res.json(updated);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+};
+router.post('/profile', saveProfileHandler);
+router.put('/profile', saveProfileHandler);
+
+// Projects
+router.get('/projects', async (req, res) => {
+  try {
+    const allProjects = dataStore.getProjects(false);
+    res.json(allProjects);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+});
+
+router.post('/projects', async (req: AuthenticatedRequest, res) => {
+  try {
+    const created = dataStore.createProject(req.body);
+    dataStore.addAuditLog(req.user?.id || 'admin', 'CREATE_PROJECT', { title: created.title });
+    res.json(created);
+  } catch (error: any) {
     res.status(500).json({ error: 'Failed to create project' });
   }
 });
 
-router.put('/projects/:id', async (req, res) => {
+router.put('/projects/:id', async (req: AuthenticatedRequest, res) => {
   try {
-    const updated = await db.update(projects).set(req.body).where(eq(projects.id, req.params.id)).returning();
-    if (updated.length === 0) return res.status(404).json({ error: 'Not found' });
-    res.json(updated[0]);
-  } catch (error) {
+    const updated = dataStore.updateProject(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ error: 'Project not found' });
+    dataStore.addAuditLog(req.user?.id || 'admin', 'UPDATE_PROJECT', { id: req.params.id });
+    res.json(updated);
+  } catch (error: any) {
     res.status(500).json({ error: 'Failed to update project' });
   }
 });
 
-router.delete('/projects/:id', async (req, res) => {
+router.delete('/projects/:id', async (req: AuthenticatedRequest, res) => {
   try {
-    const deleted = await db.delete(projects).where(eq(projects.id, req.params.id)).returning();
-    if (deleted.length === 0) return res.status(404).json({ error: 'Not found' });
+    const success = dataStore.deleteProject(req.params.id);
+    if (!success) return res.status(404).json({ error: 'Project not found' });
+    dataStore.addAuditLog(req.user?.id || 'admin', 'DELETE_PROJECT', { id: req.params.id });
     res.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: 'Failed to delete project' });
   }
 });
 
-// Example for Experiences (similar logic for Education, Skills, Testimonials)
-router.get('/experience', async (req, res) => {
-  const allExp = await db.select().from(experiences).orderBy(asc(experiences.sortOrder));
-  res.json(allExp);
-});
-
-router.post('/experience', async (req, res) => {
+// Experiences
+const getExperiencesHandler = async (req: any, res: any) => {
   try {
-    const newExp = await db.insert(experiences).values({ ...req.body, id: undefined }).returning();
-    res.json(newExp[0]);
-  } catch (error) {
+    const allExp = dataStore.getExperiences(false);
+    res.json(allExp);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch experiences' });
+  }
+};
+router.get('/experience', getExperiencesHandler);
+router.get('/experiences', getExperiencesHandler);
+
+const createExperienceHandler = async (req: AuthenticatedRequest, res: any) => {
+  try {
+    const created = dataStore.createExperience(req.body);
+    dataStore.addAuditLog(req.user?.id || 'admin', 'CREATE_EXPERIENCE', { title: created.jobTitle });
+    res.json(created);
+  } catch (error: any) {
     res.status(500).json({ error: 'Failed to create experience' });
   }
-});
+};
+router.post('/experience', createExperienceHandler);
+router.post('/experiences', createExperienceHandler);
 
-router.put('/experience/:id', async (req, res) => {
+const updateExperienceHandler = async (req: AuthenticatedRequest, res: any) => {
   try {
-    const updated = await db.update(experiences).set(req.body).where(eq(experiences.id, req.params.id)).returning();
-    if (updated.length === 0) return res.status(404).json({ error: 'Not found' });
-    res.json(updated[0]);
-  } catch (error) {
+    const updated = dataStore.updateExperience(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ error: 'Experience not found' });
+    dataStore.addAuditLog(req.user?.id || 'admin', 'UPDATE_EXPERIENCE', { id: req.params.id });
+    res.json(updated);
+  } catch (error: any) {
     res.status(500).json({ error: 'Failed to update experience' });
   }
-});
+};
+router.put('/experience/:id', updateExperienceHandler);
+router.put('/experiences/:id', updateExperienceHandler);
 
-router.delete('/experience/:id', async (req, res) => {
+const deleteExperienceHandler = async (req: AuthenticatedRequest, res: any) => {
   try {
-    const deleted = await db.delete(experiences).where(eq(experiences.id, req.params.id)).returning();
-    if (deleted.length === 0) return res.status(404).json({ error: 'Not found' });
+    const success = dataStore.deleteExperience(req.params.id);
+    if (!success) return res.status(404).json({ error: 'Experience not found' });
+    dataStore.addAuditLog(req.user?.id || 'admin', 'DELETE_EXPERIENCE', { id: req.params.id });
     res.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: 'Failed to delete experience' });
+  }
+};
+router.delete('/experience/:id', deleteExperienceHandler);
+router.delete('/experiences/:id', deleteExperienceHandler);
+
+// Education
+router.get('/education', async (req, res) => {
+  try {
+    res.json(dataStore.getEducation(false));
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch education' });
   }
 });
 
-// Generic endpoints
-const entities = [
-  { name: 'education', table: education },
-  { name: 'skills', table: skills },
-  { name: 'testimonials', table: testimonials },
-  { name: 'media', table: mediaAssets }
-];
+router.post('/education', async (req: AuthenticatedRequest, res) => {
+  try {
+    const created = dataStore.createEducation(req.body);
+    res.json(created);
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to create education' });
+  }
+});
 
-for (const entity of entities) {
-  router.get(`/${entity.name}`, async (req, res) => {
-    try {
-      const records = await db.select().from(entity.table);
-      res.json(records);
-    } catch (e) {
-      res.status(500).json({ error: `Failed to fetch ${entity.name}` });
-    }
-  });
+router.put('/education/:id', async (req: AuthenticatedRequest, res) => {
+  try {
+    const updated = dataStore.updateEducation(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ error: 'Not found' });
+    res.json(updated);
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to update education' });
+  }
+});
 
-  router.post(`/${entity.name}`, async (req, res) => {
-    try {
-      const newRecord = await db.insert(entity.table).values(req.body).returning();
-      res.json(newRecord[0]);
-    } catch (e) {
-      res.status(500).json({ error: `Failed to create ${entity.name}` });
-    }
-  });
+router.delete('/education/:id', async (req: AuthenticatedRequest, res) => {
+  try {
+    const success = dataStore.deleteEducation(req.params.id);
+    if (!success) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to delete education' });
+  }
+});
 
-  router.put(`/${entity.name}/:id`, async (req, res) => {
-    try {
-      const updated = await db.update(entity.table).set(req.body).where(eq((entity.table as any).id, req.params.id)).returning();
-      if (updated.length === 0) return res.status(404).json({ error: 'Not found' });
-      res.json(updated[0]);
-    } catch (e) {
-      res.status(500).json({ error: `Failed to update ${entity.name}` });
-    }
-  });
+// Skills
+router.get('/skills', async (req, res) => {
+  try {
+    res.json(dataStore.getSkills(false));
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch skills' });
+  }
+});
 
-  router.delete(`/${entity.name}/:id`, async (req, res) => {
-    try {
-      const deleted = await db.delete(entity.table).where(eq((entity.table as any).id, req.params.id)).returning();
-      if (deleted.length === 0) return res.status(404).json({ error: 'Not found' });
-      res.json({ success: true });
-    } catch (e) {
-      res.status(500).json({ error: `Failed to delete ${entity.name}` });
-    }
-  });
-}
+router.post('/skills', async (req: AuthenticatedRequest, res) => {
+  try {
+    const created = dataStore.createSkill(req.body);
+    res.json(created);
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to create skill' });
+  }
+});
 
-// Audit Logs (Read-only)
-import { auditLogs } from '../../db/schema';
+router.put('/skills/:id', async (req: AuthenticatedRequest, res) => {
+  try {
+    const updated = dataStore.updateSkill(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ error: 'Not found' });
+    res.json(updated);
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to update skill' });
+  }
+});
+
+router.delete('/skills/:id', async (req: AuthenticatedRequest, res) => {
+  try {
+    const success = dataStore.deleteSkill(req.params.id);
+    if (!success) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to delete skill' });
+  }
+});
+
+// Testimonials
+router.get('/testimonials', async (req, res) => {
+  try {
+    res.json(dataStore.getTestimonials(false));
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch testimonials' });
+  }
+});
+
+router.post('/testimonials', async (req: AuthenticatedRequest, res) => {
+  try {
+    const created = dataStore.createTestimonial(req.body);
+    res.json(created);
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to create testimonial' });
+  }
+});
+
+router.put('/testimonials/:id', async (req: AuthenticatedRequest, res) => {
+  try {
+    const updated = dataStore.updateTestimonial(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ error: 'Not found' });
+    res.json(updated);
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to update testimonial' });
+  }
+});
+
+router.delete('/testimonials/:id', async (req: AuthenticatedRequest, res) => {
+  try {
+    const success = dataStore.deleteTestimonial(req.params.id);
+    if (!success) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to delete testimonial' });
+  }
+});
+
+// Media
+router.get('/media', async (req, res) => {
+  try {
+    res.json(dataStore.getMediaAssets());
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch media' });
+  }
+});
+
+router.delete('/media/:id', async (req: AuthenticatedRequest, res) => {
+  try {
+    const success = dataStore.deleteMediaAsset(req.params.id);
+    if (!success) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to delete media' });
+  }
+});
+
+// Audit Logs
 router.get('/audit-logs', async (req, res) => {
   try {
-    const logs = await db.select().from(auditLogs).orderBy(asc(auditLogs.createdAt));
-    res.json(logs);
+    res.json(dataStore.getAuditLogs());
   } catch (e) {
     res.status(500).json({ error: 'Failed to fetch audit logs' });
   }
-});
-
-// Experiences uses plural in Frontend, fix to match '/experiences' if needed
-router.get('/experiences', async (req, res) => {
-  const allExp = await db.select().from(experiences).orderBy(asc(experiences.sortOrder));
-  res.json(allExp);
 });
 
 export default router;

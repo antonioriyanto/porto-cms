@@ -534,6 +534,14 @@
   "contentRevisions": [],
   "auditLogs": [
     {
+      "id": "audit-30a1184b-6d44-42e5-a59b-fa8555692034",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"127.0.0.1\"}",
+      "createdAt": "2026-09-20T09:12:03.324Z"
+    },
+    {
       "id": "audit-8014f5b8-8c1c-4b14-b43b-e05e6e115f52",
       "actorId": "admin-1",
       "action": "LOGIN",
@@ -595,7 +603,14 @@
       "email": "antonio.riyanto07@gmail.com",
       "role": "SUPER_ADMIN",
       "expiresAt": 1788154584789
+    },
+    "adbcffc5022f650c6b75dd35974fa8cc12e60d0f9a468a9c783984b921e55bfc": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789981923323
     }
   },
-  "previewTokens": {}
+  "previewTokens": {},
+  "resumeVersions": []
 }

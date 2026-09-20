@@ -36,17 +36,34 @@ export default function PublicPortfolio() {
           fetch('/api/v1/public/testimonials'),
           fetch('/api/v1/public/site')
         ]);
+
+        const parseJsonSafe = async (res: Response) => {
+          if (!res.ok) return null;
+          const text = await res.text();
+          try {
+            return JSON.parse(text);
+          } catch {
+            return null;
+          }
+        };
+
+        const [pData, prData, eData, edData, sData, tData, siteData] = await Promise.all([
+          parseJsonSafe(pRes),
+          parseJsonSafe(prRes),
+          parseJsonSafe(eRes),
+          parseJsonSafe(edRes),
+          parseJsonSafe(sRes),
+          parseJsonSafe(tRes),
+          parseJsonSafe(siteRes)
+        ]);
         
-        if (pRes.ok) setProfile(await pRes.json());
-        if (prRes.ok) setProjects(await prRes.json());
-        if (eRes.ok) setExperiences(await eRes.json());
-        if (edRes.ok) setEducation(await edRes.json());
-        if (sRes.ok) setSkills(await sRes.json());
-        if (tRes.ok) setTestimonials(await tRes.json());
-        if (siteRes.ok) {
-          const siteData = await siteRes.json();
-          if (siteData.socialLinks) setSocialLinks(siteData.socialLinks);
-        }
+        if (pData) setProfile(pData);
+        if (prData && Array.isArray(prData)) setProjects(prData);
+        if (eData && Array.isArray(eData)) setExperiences(eData);
+        if (edData && Array.isArray(edData)) setEducation(edData);
+        if (sData && Array.isArray(sData)) setSkills(sData);
+        if (tData && Array.isArray(tData)) setTestimonials(tData);
+        if (siteData && siteData.socialLinks) setSocialLinks(siteData.socialLinks);
       } catch (err) {
         console.error('Failed to load public portfolio data:', err);
       } finally {
@@ -210,7 +227,11 @@ export default function PublicPortfolio() {
                 <div key={proj.id} onClick={() => setActiveGalleryProject(proj)} className={`group relative rounded-3xl overflow-hidden bg-white/5 border border-white/10 p-8 md:p-12 transition-all duration-500 cursor-pointer hover:border-[#00f0ff]/50 hover:shadow-[0_0_40px_rgba(0,240,255,0.15)] ${idx === 0 ? 'md:col-span-2 min-h-[420px]' : 'min-h-[350px]'}`}>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10"></div>
                   <div className="absolute inset-0 bg-neutral-900">
-                    { activeGalleryProject.coverImageUrl ? <img src={activeGalleryProject.coverImageUrl} alt={proj.title} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" /> : <div className="w-full h-full bg-neutral-800 opacity-60"></div> }
+                    { proj.coverImageUrl ? (
+                      <img src={proj.coverImageUrl} alt={proj.projectTitle || proj.title} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
+                    ) : (
+                      <div className="w-full h-full bg-neutral-800 opacity-60"></div>
+                    )}
                   </div>
                   <div className="relative z-20 flex flex-col justify-end h-full">
                     <span className="text-[#00f0ff] text-xs font-bold uppercase tracking-widest mb-3">{proj.category}</span>
@@ -442,11 +463,16 @@ export default function PublicPortfolio() {
               <button onClick={() => setActiveGalleryProject(null)} className="text-neutral-400 hover:text-white text-3xl">×</button>
             </div>
             <p className="text-neutral-300 mb-8">{activeGalleryProject.solution}</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              { activeGalleryProject.coverImageUrl ? <img src={activeGalleryProject.coverImageUrl} alt={activeGalleryProject.title} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" /> : <div className="w-full h-full bg-neutral-800 opacity-60"></div> }
-              { activeGalleryProject.coverImageUrl ? <img src={activeGalleryProject.coverImageUrl} alt={activeGalleryProject.title} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" /> : <div className="w-full h-full bg-neutral-800 opacity-60"></div> }
-              { activeGalleryProject.coverImageUrl ? <img src={activeGalleryProject.coverImageUrl} alt={activeGalleryProject.title} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" /> : <div className="w-full h-full bg-neutral-800 opacity-60"></div> }
-              { activeGalleryProject.coverImageUrl ? <img src={activeGalleryProject.coverImageUrl} alt={activeGalleryProject.title} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" /> : <div className="w-full h-full bg-neutral-800 opacity-60"></div> }
+            <div className="space-y-6">
+              {activeGalleryProject.coverImageUrl ? (
+                <div className="w-full max-h-[500px] rounded-2xl overflow-hidden bg-neutral-900 border border-white/10">
+                  <img src={activeGalleryProject.coverImageUrl} alt={activeGalleryProject.projectTitle || activeGalleryProject.title} className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className="w-full p-12 text-center text-neutral-500 border border-white/10 rounded-2xl">
+                  Visual asset previews and project documentation available upon request.
+                </div>
+              )}
             </div>
           </div>
         </div>

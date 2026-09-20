@@ -1,66 +1,114 @@
 import { Router } from 'express';
-import { db } from '../../db';
-import { siteSettings, profiles, projects, experiences, education, skills, testimonials, contactInquiries } from '../../db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { dataStore } from '../services/dataStore';
 
 const router = Router();
 
 router.get('/site', async (req, res) => {
-  const settings = await db.select().from(siteSettings).limit(1);
-  const profile = await db.select().from(profiles).limit(1);
-  res.json({
-    settings: settings[0] || {},
-    profile: profile[0] || {}
-  });
+  try {
+    const siteData = dataStore.getSiteSettings();
+    res.json(siteData);
+  } catch (error: any) {
+    console.error('Error fetching site settings:', error);
+    res.status(500).json({ error: 'Failed to fetch site settings' });
+  }
 });
 
 router.get('/projects', async (req, res) => {
-  const allProjects = await db.select().from(projects).where(eq(projects.status, 'PUBLISHED')).orderBy(asc(projects.sortOrder));
-  res.json(allProjects);
+  try {
+    const projects = dataStore.getProjects(true);
+    res.json(projects);
+  } catch (error: any) {
+    console.error('Error fetching projects:', error);
+    res.status(500).json({ error: 'Failed to fetch projects' });
+  }
 });
 
 router.get('/experience', async (req, res) => {
-  const allExp = await db.select().from(experiences).where(eq(experiences.status, 'PUBLISHED')).orderBy(asc(experiences.sortOrder));
-  res.json(allExp);
+  try {
+    const exp = dataStore.getExperiences(true);
+    res.json(exp);
+  } catch (error: any) {
+    console.error('Error fetching experiences:', error);
+    res.status(500).json({ error: 'Failed to fetch experiences' });
+  }
+});
+
+router.get('/experiences', async (req, res) => {
+  try {
+    const exp = dataStore.getExperiences(true);
+    res.json(exp);
+  } catch (error: any) {
+    console.error('Error fetching experiences:', error);
+    res.status(500).json({ error: 'Failed to fetch experiences' });
+  }
 });
 
 router.get('/profile', async (req, res) => {
-  const profile = await db.select().from(profiles).limit(1);
-  res.json(profile[0] || {});
+  try {
+    const profile = dataStore.getProfile();
+    res.json(profile);
+  } catch (error: any) {
+    console.error('Error fetching profile:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
 });
 
 router.get('/education', async (req, res) => {
-  const allEdu = await db.select().from(education).where(eq(education.status, 'PUBLISHED')).orderBy(asc(education.sortOrder));
-  res.json(allEdu);
+  try {
+    const edu = dataStore.getEducation(true);
+    res.json(edu);
+  } catch (error: any) {
+    console.error('Error fetching education:', error);
+    res.status(500).json({ error: 'Failed to fetch education' });
+  }
 });
 
 router.get('/skills', async (req, res) => {
-  const allSkills = await db.select().from(skills).where(eq(skills.status, 'PUBLISHED')).orderBy(asc(skills.sortOrder));
-  res.json(allSkills);
+  try {
+    const skills = dataStore.getSkills(true);
+    res.json(skills);
+  } catch (error: any) {
+    console.error('Error fetching skills:', error);
+    res.status(500).json({ error: 'Failed to fetch skills' });
+  }
 });
 
 router.get('/testimonials', async (req, res) => {
-  const allTesti = await db.select().from(testimonials).where(eq(testimonials.status, 'PUBLISHED')).orderBy(asc(testimonials.sortOrder));
-  res.json(allTesti);
+  try {
+    const testimonials = dataStore.getTestimonials(true);
+    res.json(testimonials);
+  } catch (error: any) {
+    console.error('Error fetching testimonials:', error);
+    res.status(500).json({ error: 'Failed to fetch testimonials' });
+  }
 });
 
 router.post('/contact', async (req, res) => {
   try {
-    const { name, email, subject, message, honeypot } = req.body;
-    
-    // Honeypot validation
+    const { name, email, subject, service, budget, message, honeypot } = req.body;
+
+    // Honeypot bot protection
     if (honeypot) {
       return res.status(200).json({ success: true, message: 'Message sent successfully.' });
     }
-    
+
     if (!name || !email || !message) {
       return res.status(400).json({ error: 'Name, email, and message are required.' });
     }
-    
-    await db.insert(contactInquiries).values({ name, email, subject, message });
-    
+
+    dataStore.saveContactInquiry({
+      name,
+      email,
+      subject: subject || `${service || 'General'} Inquiry (${budget || 'Flexible'})`,
+      service,
+      budget,
+      message,
+      ipAddress: req.ip
+    });
+
     res.json({ success: true, message: 'Message sent successfully.' });
-  } catch (e) {
+  } catch (e: any) {
+    console.error('Failed to save contact inquiry:', e);
     res.status(500).json({ error: 'Failed to send message.' });
   }
 });
