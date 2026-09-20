@@ -1,0 +1,601 @@
+{
+  "adminUsers": [
+    {
+      "id": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "passwordHash": "$2b$12$.FzsJW6EcglE4dRJtOqS4ews3AVUshRnG5RaCFB2zYELaNx5Goo62",
+      "displayName": "Antonio Riyanto",
+      "role": "SUPER_ADMIN",
+      "isActive": true,
+      "lastLoginAt": "2026-08-30T05:36:24.789Z",
+      "createdAt": "2026-08-30T05:02:43.287Z",
+      "updatedAt": "2026-08-30T05:02:43.287Z"
+    }
+  ],
+  "siteSettings": {
+    "siteName": "Antonio Riyanto | Senior Creative Designer Portfolio",
+    "publicUrl": "https://ais-dev-3cjffcrz4q6wemdmstg3sf-549379433408.asia-southeast1.run.app",
+    "defaultLanguage": "id",
+    "themeColor": "#00f0ff",
+    "maintenanceMode": false,
+    "seoTitle": "Antonio Riyanto — Senior Creative Designer & Brand Architect",
+    "seoDescription": "Portfolio & Content Management System of Antonio Riyanto, Senior Creative Designer based in Jakarta, Indonesia specializing in print, digital media, packaging, and motion graphics."
+  },
+  "profile": {
+    "fullName": "Antonio Riyanto",
+    "professionalTitle": "Creative Designer",
+    "avatarUrl": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=800&auto=format&fit=crop",
+    "headline": "6 Years of Visual Architecture.",
+    "heroDescription": "Based in Jakarta. I specialize in high-stakes brand management and full-scale creative production. From managing global brand identities to developing web interfaces and motion assets, I deliver precise visual solutions that drive engagement.",
+    "about": "For 6 years, I've bridged the gap between physical print and digital media. I specialize in high-stakes brand management and full-scale creative production, ensuring that every visual solution drives true engagement. Based in Jakarta, working globally. I don't just design; I supervise the entire lifecycle from the first pixel to the final print.",
+    "location": "Jakarta, Indonesia",
+    "email": "antonio.riyanto07@gmail.com",
+    "phoneDisplay": "+62 819 0398 7051",
+    "whatsappUrl": "https://wa.me/6281903987051",
+    "linkedinUrl": "https://www.linkedin.com/in/antonio-riyanto-928203186/",
+    "careerStart": "2019-11-01",
+    "availabilityStatus": "Available for Projects"
+  },
+  "experiences": [
+    {
+      "id": "exp-1",
+      "companyName": "PT. Panca Mitra Prima Sejahtera",
+      "jobTitle": "Graphic Designer Staff",
+      "location": "Jakarta, Indonesia",
+      "startDate": "2023-05-01",
+      "endDate": "",
+      "isCurrent": true,
+      "summary": "Design and develop marketing communication materials for offline and online platforms. Manage end-to-end design process for print production including POP displays, hoardings, packaging, and brand guidelines.",
+      "sortOrder": 1,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z"
+    },
+    {
+      "id": "exp-2",
+      "companyName": "PT Sahabat Petmu Indonesia",
+      "jobTitle": "Creative Designer",
+      "location": "Jakarta, Indonesia",
+      "startDate": "2022-03-01",
+      "endDate": "2022-12-31",
+      "isCurrent": false,
+      "summary": "Researched content for brand campaigns, created design content, images, motion graphics, and videos for social media. Designed print collateral and developed the company website using HTML/CSS.",
+      "sortOrder": 2,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z"
+    },
+    {
+      "id": "exp-3",
+      "companyName": "Rata Kanan Creative",
+      "jobTitle": "Freelance Graphic Designer",
+      "location": "Yogyakarta, Indonesia",
+      "startDate": "2021-06-01",
+      "endDate": "2022-02-28",
+      "isCurrent": false,
+      "summary": "Discussed with clients to determine branding and marketing goals. Collaborated with the creative team to build social strategies and execute design needs.",
+      "sortOrder": 3,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z"
+    },
+    {
+      "id": "exp-4",
+      "companyName": "PT. Mindo Management Solutions",
+      "jobTitle": "Graphic Designer",
+      "location": "Indonesia",
+      "startDate": "2020-06-01",
+      "endDate": "2021-06-30",
+      "isCurrent": false,
+      "summary": "Collaborated with Creative Team for insightful visual content. Worked with Art Director to determine brand identity designs and handled 20+ client company accounts.",
+      "sortOrder": 4,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z"
+    },
+    {
+      "id": "exp-5",
+      "companyName": "Liberates Creative Colony",
+      "jobTitle": "Graphic Designer Internship",
+      "location": "Yogyakarta, Indonesia",
+      "startDate": "2019-11-01",
+      "endDate": "2020-12-31",
+      "isCurrent": false,
+      "summary": "Collaborated with interns to create monthly content plans for Instagram, wrote copywriting, and executed social media assets.",
+      "sortOrder": 5,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z"
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-1",
+      "institution": "STSRD VISI INDONESIA",
+      "degree": "Bachelor's Degree",
+      "fieldOfStudy": "Visual Communication Design (DKV)",
+      "location": "Yogyakarta, Indonesia",
+      "startDate": "2016-06-01",
+      "endDate": "2022-02-28",
+      "description": "Focused on visual communication design, print production, branding, and interactive digital arts.",
+      "sortOrder": 1,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "edu-2",
+      "institution": "SMAN 76 JAKARTA",
+      "degree": "High School Diploma",
+      "fieldOfStudy": "IPS (Social Sciences)",
+      "location": "Jakarta, Indonesia",
+      "startDate": "2013-10-01",
+      "endDate": "2016-10-31",
+      "description": "Completed secondary education with focus on social sciences and humanities.",
+      "sortOrder": 2,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    }
+  ],
+  "skills": [
+    {
+      "id": "sk-1",
+      "name": "Adobe Illustrator",
+      "category": "HARD",
+      "proficiency": 90,
+      "sortOrder": 1,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-2",
+      "name": "Adobe Photoshop",
+      "category": "HARD",
+      "proficiency": 90,
+      "sortOrder": 2,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-3",
+      "name": "Adobe After Effects",
+      "category": "HARD",
+      "proficiency": 80,
+      "sortOrder": 3,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-4",
+      "name": "Adobe Premiere Pro",
+      "category": "HARD",
+      "proficiency": 80,
+      "sortOrder": 4,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-5",
+      "name": "Adobe InDesign",
+      "category": "HARD",
+      "proficiency": 85,
+      "sortOrder": 5,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-6",
+      "name": "Figma / UI Design",
+      "category": "HARD",
+      "proficiency": 85,
+      "sortOrder": 6,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-7",
+      "name": "Brand Strategy",
+      "category": "SOFT",
+      "proficiency": 90,
+      "sortOrder": 7,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-8",
+      "name": "Communication",
+      "category": "SOFT",
+      "proficiency": 90,
+      "sortOrder": 8,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-9",
+      "name": "Conceptual Thinking",
+      "category": "SOFT",
+      "proficiency": 85,
+      "sortOrder": 9,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "sk-10",
+      "name": "Typography & Color",
+      "category": "SOFT",
+      "proficiency": 85,
+      "sortOrder": 10,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "slug": "panca-mitra-brand-production",
+      "clientName": "PT Panca Mitra Prima Sejahtera",
+      "projectTitle": "Retail Brand Assets & POP Production",
+      "category": "Brand Asset & Production",
+      "role": "Graphic Designer Staff",
+      "year": "2023-Present",
+      "shortDescription": "Developing Key Visuals, marketing communication materials, and overseeing end-to-end production for retail displays.",
+      "challenge": "Coordinating nationwide retail store brand guidelines with high-precision print production requirements.",
+      "solution": "Created standardized packaging, POP displays, hoardings, and promotional assets ensuring strict brand consistency.",
+      "deliverables": [
+        "Packaging",
+        "POP Displays",
+        "Hoardings",
+        "Marketing Collateral"
+      ],
+      "featured": true,
+      "sortOrder": 1,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-2",
+      "slug": "sahabat-petmu-digital-web",
+      "clientName": "PT Sahabat Petmu Indonesia",
+      "projectTitle": "Digital Content & Company Website",
+      "category": "Digital Content & Web",
+      "role": "Creative Designer",
+      "year": "2022",
+      "shortDescription": "Researching and creating comprehensive design content, motion graphics, and developing the company website.",
+      "challenge": "Building daily social media engagement and creating a user-friendly corporate website.",
+      "solution": "Designed high-impact graphics and coded responsive company web interface using HTML and CSS.",
+      "deliverables": [
+        "Social Media Content",
+        "Motion Graphics",
+        "Web Development",
+        "Flyers & Brochures"
+      ],
+      "featured": true,
+      "sortOrder": 2,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-3",
+      "slug": "rata-kanan-creative-branding",
+      "clientName": "Rata Kanan Creative",
+      "projectTitle": "Brand Strategy & Creative Direction",
+      "category": "Brand Strategy & Design",
+      "role": "Freelance Graphic Designer",
+      "year": "2021-2022",
+      "shortDescription": "Collaborating with clients to define corporate branding goals and executing cross-platform visual strategies.",
+      "challenge": "Translating diverse client visions into cohesive brand identities and marketing collateral.",
+      "solution": "Formulated robust social strategies and designed bespoke print and digital assets.",
+      "deliverables": [
+        "Brand Identity",
+        "Social Strategy",
+        "Graphic Collateral"
+      ],
+      "featured": true,
+      "sortOrder": 3,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-4",
+      "slug": "mindo-management-solutions",
+      "clientName": "PT Mindo Management Solutions",
+      "projectTitle": "Multi-Client Social Media & Design",
+      "category": "Social Media & Client Mgmt",
+      "role": "Graphic Designer",
+      "year": "2020-2021",
+      "shortDescription": "Executing monthly content plans and daily social media design for 20+ client companies under PT Mindo.",
+      "challenge": "Managing high-volume daily content creation across 20 distinct client brand identities with fast turnaround times.",
+      "solution": "Streamlined design production pipelines with Art Director oversight to maintain exceptional visual standard across diverse industries.",
+      "deliverables": [
+        "Daily Content Plans",
+        "Posters & Banners",
+        "Menu Books",
+        "Brand Assets"
+      ],
+      "featured": true,
+      "sortOrder": 4,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-mindo-1",
+      "slug": "nineteen-laundry-bar",
+      "clientName": "Nineteen Laundry Bar",
+      "projectTitle": "Social Media Design & Instagram Grid Feed",
+      "category": "Social Media Design",
+      "role": "Graphic Designer (PT Mindo)",
+      "year": "2021",
+      "shortDescription": "Comprehensive Instagram grid layout, promotional posts, and express service campaigns for Nineteen Laundry Bar.",
+      "challenge": "Creating an engaging, clean, and cohesive social media feed that highlights express laundry services and special promotions.",
+      "solution": "Developed a signature teal-and-white visual grid system featuring service highlights, member discounts, and festive greetings.",
+      "deliverables": [
+        "Instagram Feed Grid",
+        "Express Service Promos",
+        "Seasonal Campaigns",
+        "Store Signage"
+      ],
+      "featured": true,
+      "sortOrder": 5,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-mindo-2",
+      "slug": "karcher-store-surabaya",
+      "clientName": "Karcher Store Surabaya",
+      "projectTitle": "Flash Sale & Product Campaign Social Media",
+      "category": "Retail & Flash Sale Design",
+      "role": "Graphic Designer (PT Mindo)",
+      "year": "2020-2021",
+      "shortDescription": "High-impact yellow branding promotional graphics, flash sale banners, and product highlight posts for Karcher Surabaya.",
+      "challenge": "Communicating high-value discounts and technical cleaning equipment benefits clearly through dynamic social media formats.",
+      "solution": "Leveraged Karcher's iconic yellow brand identity with bold typography and clean product cutouts for maximum conversion.",
+      "deliverables": [
+        "Flash Sale Banners",
+        "Product Highlights",
+        "Ramadan & Holiday Promos",
+        "E-commerce Visuals"
+      ],
+      "featured": true,
+      "sortOrder": 6,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-mindo-3",
+      "slug": "belva-swalayan",
+      "clientName": "Belva Swalayan",
+      "projectTitle": "Supermarket Retail & Festive Social Campaigns",
+      "category": "Retail & FMCG Design",
+      "role": "Graphic Designer (PT Mindo)",
+      "year": "2021",
+      "shortDescription": "Daily promotional graphics, markdown price alerts, and festive holiday greetings for Belva supermarket.",
+      "challenge": "Promoting daily household essentials, price drops, and holiday essentials while maintaining a trustworthy retail brand image.",
+      "solution": "Designed structured price tag graphics, festive greeting posts for Ramadan/Earth Day, and safety protocol notices.",
+      "deliverables": [
+        "Price Drop Promos",
+        "Festive Greeting Posts",
+        "Supermarket Catalogs",
+        "Store Announcements"
+      ],
+      "featured": true,
+      "sortOrder": 7,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-mindo-4",
+      "slug": "kokikan-app",
+      "clientName": "Kokikan",
+      "projectTitle": "Home-Cooked Food Delivery App & Web UI",
+      "category": "App & Web Branding",
+      "role": "Graphic & Web Designer (PT Mindo)",
+      "year": "2021",
+      "shortDescription": "Branding, social media assets, and promotional web/app design for Kokikan homemade food delivery service.",
+      "challenge": "Introducing a new community-based food ordering platform that connects neighbors with home cooks.",
+      "solution": "Created vibrant green-themed promotional ads, app mockup showcases, and landing page visuals highlighting fresh homemade dishes.",
+      "deliverables": [
+        "App UI Showcases",
+        "Social Media Ads",
+        "Website Landing Banners",
+        "Brand Guidelines"
+      ],
+      "featured": true,
+      "sortOrder": 8,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-mindo-5",
+      "slug": "toko-salman",
+      "clientName": "Toko Salman",
+      "projectTitle": "Distributor & Reseller Campaign Design",
+      "category": "Distributor Branding",
+      "role": "Graphic Designer (PT Mindo)",
+      "year": "2020-2021",
+      "shortDescription": "Reseller recruitment campaigns, product highlights, and engaging social media posts for Toko Salman distributor.",
+      "challenge": "Attracting milk product resellers and engaging retail customers with interactive educational and financial incentive posts.",
+      "solution": "Designed eye-catching 'Makin Cuan Jadi Agen' campaigns, recipe highlights, and interactive puzzle posts.",
+      "deliverables": [
+        "Reseller Recruitment Ads",
+        "Product Showcase Posts",
+        "Interactive Social Games",
+        "Campaign Banners"
+      ],
+      "featured": true,
+      "sortOrder": 9,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    },
+    {
+      "id": "proj-mindo-6",
+      "slug": "dilla-chicken",
+      "clientName": "Dilla Chicken",
+      "projectTitle": "Crispy Fast Food Promotional Design",
+      "category": "F&B Marketing Design",
+      "role": "Graphic Designer (PT Mindo)",
+      "year": "2020",
+      "shortDescription": "Appetizing fast food promotional posts, combo meal packages, and creative conceptual ads for Dilla Chicken.",
+      "challenge": "Maximizing appetite appeal and promoting value bundle packages in a competitive fast-food market.",
+      "solution": "Crafted striking red-themed visual compositions featuring close-up crispy chicken photography, bundle pricing, and witty emergency hunger concepts.",
+      "deliverables": [
+        "Combo Meal Promos",
+        "Appetizing Product Shots",
+        "Social Media Ads",
+        "Menu Graphics"
+      ],
+      "featured": true,
+      "sortOrder": 10,
+      "isVisible": true,
+      "status": "PUBLISHED",
+      "publishedAt": "2026-08-30T05:02:42.928Z",
+      "media": []
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "test-1",
+      "personName": "Elena R.",
+      "personTitle": "Marketing Director",
+      "company": "PT Panca Mitra",
+      "quote": "Antonio didn't just design a package; he crafted a visual experience that elevated our entire brand identity on the shelves.",
+      "isVerified": true,
+      "sortOrder": 1,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "test-2",
+      "personName": "Marcus T.",
+      "personTitle": "Creative Director",
+      "company": "Rata Kanan Creative",
+      "quote": "The attention to detail in his print production files and motion graphics is simply world-class. A true versatile talent.",
+      "isVerified": true,
+      "sortOrder": 2,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    },
+    {
+      "id": "test-3",
+      "personName": "Sarah J.",
+      "personTitle": "Founder",
+      "company": "PT Sahabat Petmu",
+      "quote": "A rare hybrid of a print expert and digital motion artist. The campaigns he designed boosted our engagement instantly.",
+      "isVerified": true,
+      "sortOrder": 3,
+      "isVisible": true,
+      "status": "PUBLISHED"
+    }
+  ],
+  "socialLinks": [
+    {
+      "id": "soc-1",
+      "platform": "LinkedIn",
+      "label": "LinkedIn Profile",
+      "url": "https://www.linkedin.com/in/antonio-riyanto-928203186/",
+      "sortOrder": 1,
+      "isVisible": true
+    },
+    {
+      "id": "soc-2",
+      "platform": "WhatsApp",
+      "label": "WhatsApp Chat",
+      "url": "https://wa.me/6281903987051",
+      "sortOrder": 2,
+      "isVisible": true
+    },
+    {
+      "id": "soc-3",
+      "platform": "Email",
+      "label": "Direct Email",
+      "url": "mailto:antonio.riyanto07@gmail.com",
+      "sortOrder": 3,
+      "isVisible": true
+    }
+  ],
+  "mediaAssets": [],
+  "contentRevisions": [],
+  "auditLogs": [
+    {
+      "id": "audit-8014f5b8-8c1c-4b14-b43b-e05e6e115f52",
+      "actorId": "admin-1",
+      "action": "LOGIN",
+      "entityType": "AdminUser",
+      "entityId": "admin-1",
+      "metadataJson": null,
+      "createdAt": "2026-08-30T05:36:24.790Z"
+    },
+    {
+      "id": "audit-eac297ca-037f-4e34-8ddf-9dd13c4779fa",
+      "actorId": "admin-1",
+      "action": "LOGIN",
+      "entityType": "AdminUser",
+      "entityId": "admin-1",
+      "metadataJson": null,
+      "createdAt": "2026-08-30T05:33:38.363Z"
+    },
+    {
+      "id": "audit-d3eb33ba-a050-438a-bd1b-dc58b189f5a1",
+      "actorId": "admin-1",
+      "action": "LOGIN",
+      "entityType": "AdminUser",
+      "entityId": "admin-1",
+      "metadataJson": null,
+      "createdAt": "2026-08-30T05:29:22.004Z"
+    },
+    {
+      "id": "audit-862123a3-bf68-48a8-b14f-c13c9b4f3459",
+      "actorId": "admin-1",
+      "action": "LOGIN",
+      "entityType": "AdminUser",
+      "entityId": "admin-1",
+      "metadataJson": null,
+      "createdAt": "2026-08-30T05:06:11.659Z"
+    }
+  ],
+  "contactInquiries": [],
+  "sessions": {
+    "f4320737173897376cb2a0340b193f604a193f26a5bb8e015be8d8e774f289e2": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1788152771657
+    },
+    "38afe66acffc6436bc18360122efdd4e90c40b20b156736b315a20e6918a077c": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1788154162003
+    },
+    "6a3358e70b4014458ff5c537a793ebc5dbd70a32e7ecc1bac7df2ff4bd0856ce": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1788154418361
+    },
+    "4765b659086a79e2e4ea112ad2c70148feff2f918bad17e0e173e48a63081471": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1788154584789
+    }
+  },
+  "previewTokens": {}
+}
