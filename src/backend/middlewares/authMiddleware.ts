@@ -15,7 +15,13 @@ export interface AuthenticatedRequest extends Request {
 
 export const requireAdmin = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
-    const sessionId = req.cookies?.admin_session;
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader && authHeader.toLowerCase().startsWith('bearer ')
+      ? authHeader.slice(7).trim()
+      : null;
+    const customToken = req.headers['x-admin-token'] as string | undefined;
+    const sessionId = req.cookies?.admin_session || bearerToken || customToken;
+
     if (!sessionId) {
       return res.status(401).json({ success: false, error: 'Unauthorized', message: 'Unauthorized' });
     }

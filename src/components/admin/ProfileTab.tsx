@@ -4,6 +4,7 @@ import {
   Check, AlertCircle, Save, ExternalLink, Shield
 } from 'lucide-react';
 import { ProfileData } from './types';
+import { adminFetch } from '../../services/apiClient';
 
 interface ProfileTabProps {
   profile: ProfileData;
@@ -31,7 +32,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch('/api/v1/admin/profile', {
+      const res = await adminFetch('/api/v1/admin/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profile)
@@ -69,7 +70,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     formData.append('resume', file);
 
     try {
-      const res = await fetch('/api/v1/admin/resume/upload', {
+      const res = await adminFetch('/api/v1/admin/resume/upload', {
         method: 'POST',
         body: formData
       });

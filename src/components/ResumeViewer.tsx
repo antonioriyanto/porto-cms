@@ -21,7 +21,7 @@ export default function ResumeViewer() {
           fetch('/api/v1/public/experience'),
           fetch('/api/v1/public/education'),
           fetch('/api/v1/public/skills'),
-          fetch('/api/v1/public/resume')
+          fetch('/api/v1/public/resume', { headers: { 'Accept': 'application/json' } })
         ]);
 
         const parseJsonSafe = async (res: Response) => {
@@ -60,8 +60,8 @@ export default function ResumeViewer() {
   };
 
   const handleDownload = () => {
-    if (resumeData && resumeData.fileUrl && !resumeData.viewUrl) {
-      window.open(resumeData.fileUrl, '_blank');
+    if (resumeData?.hasCustomResume) {
+      window.location.href = '/api/v1/public/resume';
     } else {
       window.print();
     }

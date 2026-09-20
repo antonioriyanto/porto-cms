@@ -4,6 +4,7 @@ import {
   AlertCircle, Eye, EyeOff, X, Briefcase, ExternalLink, Image as ImageIcon
 } from 'lucide-react';
 import { ProjectItem } from './types';
+import { adminFetch } from '../../services/apiClient';
 
 interface ProjectsTabProps {
   projects: ProjectItem[];
@@ -94,7 +95,7 @@ export const ProjectsTab: React.FC<ProjectsTabProps> = ({
     try {
       if (editingProject.id) {
         // Update
-        const res = await fetch(`/api/v1/admin/projects/${editingProject.id}`, {
+        const res = await adminFetch(`/api/v1/admin/projects/${editingProject.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -109,7 +110,7 @@ export const ProjectsTab: React.FC<ProjectsTabProps> = ({
         }
       } else {
         // Create
-        const res = await fetch('/api/v1/admin/projects', {
+        const res = await adminFetch('/api/v1/admin/projects', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -132,7 +133,7 @@ export const ProjectsTab: React.FC<ProjectsTabProps> = ({
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/v1/admin/projects/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`/api/v1/admin/projects/${id}`, { method: 'DELETE' });
       if (res.ok) {
         showToast('Project deleted successfully');
         setDeleteConfirmId(null);
@@ -157,7 +158,7 @@ export const ProjectsTab: React.FC<ProjectsTabProps> = ({
     const orderPayload = reordered.map((p, i) => ({ id: p.id, sortOrder: i + 1 }));
 
     try {
-      const res = await fetch('/api/v1/admin/projects/reorder', {
+      const res = await adminFetch('/api/v1/admin/projects/reorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order: orderPayload })

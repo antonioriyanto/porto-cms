@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Briefcase, Calendar, MapPin, X, Check, AlertCircle } from 'lucide-react';
 import { ExperienceItem } from './types';
+import { adminFetch } from '../../services/apiClient';
 
 interface ExperienceTabProps {
   experiences: ExperienceItem[];
@@ -62,7 +63,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({
 
     try {
       if (editingExp.id) {
-        const res = await fetch(`/api/v1/admin/experiences/${editingExp.id}`, {
+        const res = await adminFetch(`/api/v1/admin/experiences/${editingExp.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -75,7 +76,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({
           showToast('Failed to update experience', 'error');
         }
       } else {
-        const res = await fetch('/api/v1/admin/experiences', {
+        const res = await adminFetch('/api/v1/admin/experiences', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -97,7 +98,7 @@ export const ExperienceTab: React.FC<ExperienceTabProps> = ({
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/v1/admin/experiences/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`/api/v1/admin/experiences/${id}`, { method: 'DELETE' });
       if (res.ok) {
         showToast('Experience record deleted');
         setDeleteConfirmId(null);

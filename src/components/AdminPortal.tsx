@@ -10,6 +10,7 @@ import {
   SkillItem, TestimonialItem, MediaAssetItem, SiteSettingsData, 
   ProfileData, AuditLogItem 
 } from './admin/types';
+import { adminFetch, getAdminToken, setAdminToken } from '../services/apiClient';
 
 import { DashboardTab } from './admin/DashboardTab';
 import { ProfileTab } from './admin/ProfileTab';
@@ -84,37 +85,52 @@ export default function AdminPortal() {
         statsRes, profRes, resumeRes, projRes, expRes, 
         eduRes, skillRes, testRes, mediaRes, setRes, logRes
       ] = await Promise.all([
-        fetch('/api/v1/admin/dashboard/stats'),
-        fetch('/api/v1/admin/profile'),
-        fetch('/api/v1/admin/resume/active'),
-        fetch('/api/v1/admin/projects'),
-        fetch('/api/v1/admin/experiences'),
-        fetch('/api/v1/admin/education'),
-        fetch('/api/v1/admin/skills'),
-        fetch('/api/v1/admin/testimonials'),
-        fetch('/api/v1/admin/media'),
-        fetch('/api/v1/admin/settings'),
-        fetch('/api/v1/admin/audit-logs')
+        adminFetch('/api/v1/admin/dashboard/stats'),
+        adminFetch('/api/v1/admin/profile'),
+        adminFetch('/api/v1/admin/resume/active'),
+        adminFetch('/api/v1/admin/projects'),
+        adminFetch('/api/v1/admin/experiences'),
+        adminFetch('/api/v1/admin/education'),
+        adminFetch('/api/v1/admin/skills'),
+        adminFetch('/api/v1/admin/testimonials'),
+        adminFetch('/api/v1/admin/media'),
+        adminFetch('/api/v1/admin/settings'),
+        adminFetch('/api/v1/admin/audit-logs')
       ]);
 
-      if (statsRes.ok) {
-        const sData = await statsRes.json();
+      const parseJson = async (r: Response) => {
+        if (!r.ok) return null;
+        try { return await r.json(); } catch { return null; }
+      };
+
+      const [sData, pData, rData, prjData, expData, edData, skData, tData, mData, stData, lData] = await Promise.all([
+        parseJson(statsRes),
+        parseJson(profRes),
+        parseJson(resumeRes),
+        parseJson(projRes),
+        parseJson(expRes),
+        parseJson(eduRes),
+        parseJson(skillRes),
+        parseJson(testRes),
+        parseJson(mediaRes),
+        parseJson(setRes),
+        parseJson(logRes)
+      ]);
+
+      if (sData) {
         setStats(sData.stats);
         if (sData.projects) setProjects(sData.projects);
       }
-      if (profRes.ok) setProfile(await profRes.json());
-      if (resumeRes.ok) {
-        const rData = await resumeRes.json();
-        setActiveResume(rData.resume);
-      }
-      if (projRes.ok) setProjects(await projRes.json());
-      if (expRes.ok) setExperiences(await expRes.json());
-      if (eduRes.ok) setEducation(await eduRes.json());
-      if (skillRes.ok) setSkills(await skillRes.json());
-      if (testRes.ok) setTestimonials(await testRes.json());
-      if (mediaRes.ok) setMediaAssets(await mediaRes.json());
-      if (setRes.ok) setSettings(await setRes.json());
-      if (logRes.ok) setAuditLogs(await logRes.json());
+      if (pData) setProfile(pData);
+      if (rData && rData.resume) setActiveResume(rData.resume);
+      if (prjData && Array.isArray(prjData)) setProjects(prjData);
+      if (expData && Array.isArray(expData)) setExperiences(expData);
+      if (edData && Array.isArray(edData)) setEducation(edData);
+      if (skData && Array.isArray(skData)) setSkills(skData);
+      if (tData && Array.isArray(tData)) setTestimonials(tData);
+      if (mData && Array.isArray(mData)) setMediaAssets(mData);
+      if (stData) setSettings(stData);
+      if (lData && Array.isArray(lData)) setAuditLogs(lData);
     } catch (err) {
       console.error('Failed to load admin datasets:', err);
     }
@@ -122,14 +138,20 @@ export default function AdminPortal() {
 
   const checkSession = useCallback(async () => {
     try {
-      const res = await fetch('/api/v1/auth/session');
+      const res = await adminFetch('/api/v1/auth/session');
       if (res.ok) {
         const data = await res.json();
-        setUser(data.user);
-        await loadAllAdminData();
-      } else {
-        setUser(null);
+        if (data.user) {
+          setUser(data.user);
+          await loadAllAdminData();
+          return;
+        }
       }
+      // If unauthorized, clear token
+      if (res.status === 401) {
+        setAdminToken(null);
+      }
+      setUser(null);
     } catch (err) {
       setUser(null);
     } finally {
@@ -147,20 +169,41 @@ export default function AdminPortal() {
     setLoginLoading(true);
 
     try {
-      const res = await fetch('/api/v1/auth/login', {
+      const res = await adminFetch('/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: loginEmail, password: loginPassword })
+        body: JSON.stringify({ 
+          email: loginEmail.trim(), 
+          password: loginPassword 
+        })
       });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setUser(data.user);
-        await loadAllAdminData();
-      } else {
-        setLoginError(data.error || data.message || 'Invalid credentials');
+
+      let data: any = null;
+      try {
+        const rawText = await res.text();
+        data = rawText ? JSON.parse(rawText) : null;
+      } catch {
+        data = null;
       }
-    } catch (err) {
-      setLoginError('Network error connecting to backend service');
+
+      if (res.ok && data?.success) {
+        if (data.token) {
+          setAdminToken(data.token);
+        }
+        setUser(data.user);
+        // Load initial data without allowing failure to cancel successful login
+        try {
+          await loadAllAdminData();
+        } catch (loadErr) {
+          console.warn('Initial admin data hydration warning:', loadErr);
+        }
+      } else {
+        const errMsg = data?.error || data?.message || (res.status === 401 ? 'Invalid email or password' : `Server error (HTTP ${res.status})`);
+        setLoginError(errMsg);
+      }
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setLoginError(err.message || 'Network error connecting to backend service');
     } finally {
       setLoginLoading(false);
     }
@@ -168,8 +211,9 @@ export default function AdminPortal() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/v1/auth/logout', { method: 'POST' });
+      await adminFetch('/api/v1/auth/logout', { method: 'POST' });
     } catch {}
+    setAdminToken(null);
     setUser(null);
   };
 

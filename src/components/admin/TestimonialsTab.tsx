@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Star, Quote, X, Check, AlertCircle } from 'lucide-react';
 import { TestimonialItem } from './types';
+import { adminFetch } from '../../services/apiClient';
 
 interface TestimonialsTabProps {
   testimonials: TestimonialItem[];
@@ -48,7 +49,7 @@ export const TestimonialsTab: React.FC<TestimonialsTabProps> = ({
 
     try {
       if (editingItem.id) {
-        const res = await fetch(`/api/v1/admin/testimonials/${editingItem.id}`, {
+        const res = await adminFetch(`/api/v1/admin/testimonials/${editingItem.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(editingItem)
@@ -61,7 +62,7 @@ export const TestimonialsTab: React.FC<TestimonialsTabProps> = ({
           showToast('Failed to update testimonial', 'error');
         }
       } else {
-        const res = await fetch('/api/v1/admin/testimonials', {
+        const res = await adminFetch('/api/v1/admin/testimonials', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(editingItem)
@@ -83,7 +84,7 @@ export const TestimonialsTab: React.FC<TestimonialsTabProps> = ({
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/v1/admin/testimonials/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`/api/v1/admin/testimonials/${id}`, { method: 'DELETE' });
       if (res.ok) {
         showToast('Testimonial deleted');
         setDeleteConfirmId(null);

@@ -534,6 +534,38 @@
   "contentRevisions": [],
   "auditLogs": [
     {
+      "id": "audit-cf4682d9-6cd6-40eb-9f82-992db7a64f17",
+      "actorId": "admin-1",
+      "action": "DELETE_PROJECT",
+      "entityType": "System",
+      "metadataJson": "{\"id\":\"proj-1789899045888\"}",
+      "createdAt": "2026-09-20T10:10:50.711Z"
+    },
+    {
+      "id": "audit-238f9e94-30ad-4660-8060-3c5ef7ad23f9",
+      "actorId": "admin-1",
+      "action": "CREATE_PROJECT",
+      "entityType": "System",
+      "metadataJson": "{\"title\":\"Test Project Verification\",\"id\":\"proj-1789899045888\"}",
+      "createdAt": "2026-09-20T10:10:45.888Z"
+    },
+    {
+      "id": "audit-5235b919-2899-48e2-8e82-3d72fdccd65d",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"127.0.0.1\"}",
+      "createdAt": "2026-09-20T10:10:32.238Z"
+    },
+    {
+      "id": "audit-f99677b3-300f-4d60-a30e-5d6f4b0d1533",
+      "actorId": "admin-1",
+      "action": "LOGIN_SUCCESS",
+      "entityType": "System",
+      "metadataJson": "{\"email\":\"antonio.riyanto07@gmail.com\",\"ip\":\"127.0.0.1\"}",
+      "createdAt": "2026-09-20T10:04:38.782Z"
+    },
+    {
       "id": "audit-a455fda7-bbe2-4a34-85ff-7c0a741c5086",
       "actorId": "admin-1",
       "action": "DELETE_PROJECT",
@@ -747,6 +779,18 @@
       "email": "antonio.riyanto07@gmail.com",
       "role": "SUPER_ADMIN",
       "expiresAt": 1789984460342
+    },
+    "7b0b3423820f697445c0002e21cf95f3e82911378b298d85b37c1a33a2f395b2": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789985078781
+    },
+    "656abcb4408fa32eae4cbf1aa9994a91cd9acc327f2b1872828b6daf07a7c2fc": {
+      "userId": "admin-1",
+      "email": "antonio.riyanto07@gmail.com",
+      "role": "SUPER_ADMIN",
+      "expiresAt": 1789985432237
     }
   },
   "previewTokens": {},

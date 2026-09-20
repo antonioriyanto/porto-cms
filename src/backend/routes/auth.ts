@@ -167,10 +167,11 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
     } catch {}
 
     // Cookie configuration
+    const isHttps = Boolean(req.secure || req.headers['x-forwarded-proto'] === 'https' || process.env.NODE_ENV === 'production');
     res.cookie('admin_session', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isHttps,
+      sameSite: isHttps ? 'none' : 'lax',
       path: '/',
       maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
@@ -178,6 +179,7 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
     return res.status(200).json({
       success: true,
       message: 'Login successful',
+      token,
       user: {
         id: authenticatedUser.id,
         email: authenticatedUser.email,
@@ -198,7 +200,13 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
 // GET /api/v1/auth/session
 router.get('/session', async (req: Request, res: Response) => {
   try {
-    const token = req.cookies?.admin_session;
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader && authHeader.toLowerCase().startsWith('bearer ')
+      ? authHeader.slice(7).trim()
+      : null;
+    const customToken = req.headers['x-admin-token'] as string | undefined;
+    const token = req.cookies?.admin_session || bearerToken || customToken;
+
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -275,7 +283,13 @@ router.get('/session', async (req: Request, res: Response) => {
 // POST /api/v1/auth/logout
 router.post('/logout', async (req: Request, res: Response) => {
   try {
-    const token = req.cookies?.admin_session;
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader && authHeader.toLowerCase().startsWith('bearer ')
+      ? authHeader.slice(7).trim()
+      : null;
+    const customToken = req.headers['x-admin-token'] as string | undefined;
+    const token = req.cookies?.admin_session || bearerToken || customToken;
+
     if (token) {
       dataStore.deleteSession(token);
       if (isDatabaseConfigured) {
@@ -287,7 +301,12 @@ router.post('/logout', async (req: Request, res: Response) => {
         }
       }
     }
-    res.clearCookie('admin_session', { path: '/' });
+    const isHttps = Boolean(req.secure || req.headers['x-forwarded-proto'] === 'https' || process.env.NODE_ENV === 'production');
+    res.clearCookie('admin_session', {
+      path: '/',
+      secure: isHttps,
+      sameSite: isHttps ? 'none' : 'lax'
+    });
     return res.status(200).json({
       success: true,
       message: 'Logged out successfully'

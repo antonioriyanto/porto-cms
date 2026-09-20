@@ -13,11 +13,19 @@ const app = express();
 
 app.use(helmet({
   contentSecurityPolicy: false, // Vite requires inline scripts in dev
+  frameguard: false, // Allow embedding in AI Studio preview iframe
+  crossOriginResourcePolicy: false, // Prevent blocking cross-origin fetch in iframe
+  crossOriginOpenerPolicy: false,
+  originAgentCluster: false,
 }));
 app.use(cors({
   origin: true,
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Token', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Set-Cookie', 'Authorization']
 }));
+app.options('*', cors());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use(cookieParser());

@@ -4,6 +4,7 @@ import {
   ExternalLink, FileText, AlertCircle, X 
 } from 'lucide-react';
 import { MediaAssetItem } from './types';
+import { adminFetch } from '../../services/apiClient';
 
 interface MediaTabProps {
   mediaAssets: MediaAssetItem[];
@@ -38,7 +39,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({
     formData.append('file', file);
 
     try {
-      const res = await fetch('/api/v1/admin/media/upload', {
+      const res = await adminFetch('/api/v1/admin/media/upload', {
         method: 'POST',
         body: formData
       });
@@ -72,7 +73,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/v1/admin/media/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`/api/v1/admin/media/${id}`, { method: 'DELETE' });
       if (res.ok) {
         showToast('Media asset deleted');
         setDeleteConfirmId(null);

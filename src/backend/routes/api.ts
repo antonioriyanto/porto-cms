@@ -86,6 +86,17 @@ router.get('/testimonials', async (req, res) => {
 router.get('/resume', async (req, res) => {
   try {
     const resume = dataStore.getActiveResume();
+    const wantsJson = (req.headers.accept && req.headers.accept.includes('application/json')) || req.query.format === 'json';
+
+    if (wantsJson) {
+      return res.json({
+        hasCustomResume: Boolean(resume && resume.fileUrl),
+        resume: resume || null,
+        downloadUrl: '/api/v1/public/resume?download=1',
+        viewUrl: '/resume'
+      });
+    }
+
     if (resume && resume.fileUrl) {
       if (resume.fileUrl.startsWith('data:')) {
         const matches = resume.fileUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);

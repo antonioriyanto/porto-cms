@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Settings, Save, Check, AlertCircle, Globe, ShieldAlert } from 'lucide-react';
 import { SiteSettingsData } from './types';
+import { adminFetch } from '../../services/apiClient';
 
 interface SettingsTabProps {
   settings: SiteSettingsData;
@@ -26,7 +27,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({
     setSaving(true);
 
     try {
-      const res = await fetch('/api/v1/admin/settings', {
+      const res = await adminFetch('/api/v1/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)

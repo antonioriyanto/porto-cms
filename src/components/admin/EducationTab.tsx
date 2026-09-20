@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, GraduationCap, Calendar, X, Check, AlertCircle } from 'lucide-react';
 import { EducationItem } from './types';
+import { adminFetch } from '../../services/apiClient';
 
 interface EducationTabProps {
   education: EducationItem[];
@@ -47,7 +48,7 @@ export const EducationTab: React.FC<EducationTabProps> = ({
 
     try {
       if (editingItem.id) {
-        const res = await fetch(`/api/v1/admin/education/${editingItem.id}`, {
+        const res = await adminFetch(`/api/v1/admin/education/${editingItem.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(editingItem)
@@ -60,7 +61,7 @@ export const EducationTab: React.FC<EducationTabProps> = ({
           showToast('Failed to update education', 'error');
         }
       } else {
-        const res = await fetch('/api/v1/admin/education', {
+        const res = await adminFetch('/api/v1/admin/education', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(editingItem)
@@ -82,7 +83,7 @@ export const EducationTab: React.FC<EducationTabProps> = ({
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/v1/admin/education/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`/api/v1/admin/education/${id}`, { method: 'DELETE' });
       if (res.ok) {
         showToast('Education record deleted');
         setDeleteConfirmId(null);

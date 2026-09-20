@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Award, X, Check, AlertCircle, Sparkles } from 'lucide-react';
 import { SkillItem } from './types';
+import { adminFetch } from '../../services/apiClient';
 
 interface SkillsTabProps {
   skills: SkillItem[];
@@ -46,7 +47,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({
 
     try {
       if (editingSkill.id) {
-        const res = await fetch(`/api/v1/admin/skills/${editingSkill.id}`, {
+        const res = await adminFetch(`/api/v1/admin/skills/${editingSkill.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(editingSkill)
@@ -59,7 +60,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({
           showToast('Failed to update skill', 'error');
         }
       } else {
-        const res = await fetch('/api/v1/admin/skills', {
+        const res = await adminFetch('/api/v1/admin/skills', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(editingSkill)
@@ -81,7 +82,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/v1/admin/skills/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`/api/v1/admin/skills/${id}`, { method: 'DELETE' });
       if (res.ok) {
         showToast('Skill deleted');
         setDeleteConfirmId(null);
