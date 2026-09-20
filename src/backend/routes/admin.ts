@@ -95,11 +95,22 @@ router.post('/resume/upload', upload.any(), async (req: AuthenticatedRequest, re
       isActive: true
     };
 
+    const savedResume = dataStore.saveActiveResume(asset);
     dataStore.addAuditLog(req.user?.id || 'admin', 'RESUME_UPLOAD', { fileName });
-    res.json(asset);
+    res.json(savedResume);
   } catch (error: any) {
     console.error('Upload error:', error);
     res.status(500).json({ error: 'Failed to upload resume' });
+  }
+});
+
+// Resume
+router.get('/resume', async (req, res) => {
+  try {
+    const resume = dataStore.getActiveResume();
+    res.json(resume || { isActive: false });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch resume' });
   }
 });
 

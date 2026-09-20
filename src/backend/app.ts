@@ -14,7 +14,7 @@ app.use(helmet({
   contentSecurityPolicy: false, // Vite requires inline scripts in dev
 }));
 app.use(cors({
-  origin: process.env.PUBLIC_APP_URL || 'http://localhost:3000',
+  origin: true,
   credentials: true
 }));
 app.use(express.json({ limit: '20mb' }));

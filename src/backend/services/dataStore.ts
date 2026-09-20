@@ -479,6 +479,28 @@ class DataStoreService {
     return data.mediaAssets || [];
   }
 
+  // --- Resume ---
+  public getActiveResume() {
+    const data = this.loadData();
+    const list = data.resumeVersions || [];
+    return list.find((r: any) => r.isActive) || list[0] || null;
+  }
+
+  public saveActiveResume(resume: any) {
+    const data = this.loadData();
+    data.resumeVersions = data.resumeVersions || [];
+    data.resumeVersions.forEach((r: any) => { r.isActive = false; });
+    const item = {
+      id: `resume-${Date.now()}`,
+      ...resume,
+      isActive: true,
+      createdAt: new Date().toISOString()
+    };
+    data.resumeVersions.unshift(item);
+    this.persist();
+    return item;
+  }
+
   public addMediaAsset(asset: any) {
     const data = this.loadData();
     const item = {

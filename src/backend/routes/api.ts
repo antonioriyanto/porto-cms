@@ -83,6 +83,31 @@ router.get('/testimonials', async (req, res) => {
   }
 });
 
+router.get('/resume', async (req, res) => {
+  try {
+    const resume = dataStore.getActiveResume();
+    if (resume && resume.fileUrl) {
+      if (resume.fileUrl.startsWith('data:')) {
+        const matches = resume.fileUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        if (matches && matches.length === 3) {
+          const buffer = Buffer.from(matches[2], 'base64');
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', `inline; filename="${resume.fileName || 'Antonio-Riyanto-Resume.pdf'}"`);
+          return res.send(buffer);
+        }
+      }
+      return res.redirect(resume.fileUrl);
+    }
+    res.json({
+      hasCustomResume: false,
+      viewUrl: '/resume'
+    });
+  } catch (error: any) {
+    console.error('Error fetching resume:', error);
+    res.status(500).json({ error: 'Failed to fetch resume' });
+  }
+});
+
 router.post('/contact', async (req, res) => {
   try {
     const { name, email, subject, service, budget, message, honeypot } = req.body;
